@@ -22,14 +22,18 @@ private:
     Ui::MainWindow *ui;
     
     //variable
-    QImage image;
+    QPixmap image;
+    QPixmap cutImage[100][100];
     bool imageLoad;
+    int piece;
     
 private slots :
     //functions
     void quit();
     void openImage();
-
+    void allToOne();
+    void cut();
+    void convert();
 };
 
 #endif // MAINWINDOW_H

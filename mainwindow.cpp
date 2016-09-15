@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //print on imageViewer
     ui->imageViewer->setText("Aucune image sélectionnée...");
+    ui->progress->setValue(0);
 
     //init
     imageLoad = false;
@@ -15,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //connect signal to slot
     connect(ui->close, SIGNAL(clicked(bool)), this, SLOT(quit()));
     connect(ui->open, SIGNAL(clicked(bool)), this, SLOT(openImage()));
+    connect(ui->convert, SIGNAL(clicked(bool)), this, SLOT(convert()));
 }
 
 MainWindow::~MainWindow()
@@ -35,5 +37,23 @@ void MainWindow::openImage() {
     }
     image.load(imageLink);
     image = image.scaled(ui->imageViewer->size(), Qt::IgnoreAspectRatio, Qt::FastTransformation);
-    ui->imageViewer->setPixmap(QPixmap::fromImage(image));
+    ui->imageViewer->setPixmap(image);
+}
+
+void MainWindow::cut() {
+    int height(image.height()), width(image.width()), lastX(0), lastY(0);
+
+    for(unsigned int i(0) ; i < piece ; i++) {
+        for(unsigned int j(0) ; j < piece ; j++) {
+            cutImage[i][j] = image.copy(lastX, lastY, i * (width / piece), j * (height / piece));
+            lastX += width / piece;
+            lastY += height / piece;
+        }
+    }
+}
+
+void MainWindow::convert() {
+    piece = ui->numberPiece->value();
+    cut();
+
 }
