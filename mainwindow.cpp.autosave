@@ -5,12 +5,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    //print on imageViewer
-    ui->imageViewer->setText("Aucune image sélectionnée...");
-
     //init
     imageLoad = false;
+    
+    ui->setupUi(this);
+    
+    
+    //print on imageViewer
+    if(!imageLoad)
+        ui->imageViewer->setText("Aucune image sélectionnée...");
     
     //connect signal to slot
     connect(ui->close, SIGNAL(clicked(bool)), this, SLOT(quit()));
