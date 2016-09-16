@@ -96,13 +96,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="cut">
-           <property name="text">
-            <string>Découper l'image</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="convert">
            <property name="text">
             <string>Convertir</string>

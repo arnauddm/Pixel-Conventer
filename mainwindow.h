@@ -31,7 +31,7 @@ private slots :
     //functions
     void quit();
     void openImage();
-    void allToOne();
+    //void allToOne();
     void cut();
     void convert();
 };
