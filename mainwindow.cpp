@@ -56,13 +56,47 @@ void MainWindow::cut() {
 void MainWindow::convert() {
     piece = ui->numberPiece->value();
     cut();
-    int compteur(0);
+    int pieceCounter(0);
     QImage frag;
+    int red(0), green(0), blue(0);
+
     for(int i(0) ; i != piece ; i++) {
         for(int j(0) ; j != piece ; j++) {
             frag = cutImage[i][j].toImage();
-            compteur++;
+            int colorRed(0), colorGreen(0), colorBlue(0), counter(0);
+            for(int x(0) ; x != frag.width() ; x++) {
+                for(int y(0) ; y != frag.height() ; y++) {
+                    QRgb pix(frag.pixel(x, y));
+                    colorRed += qRed(pix);
+                    colorGreen += qGreen(pix);
+                    colorBlue += qBlue(pix);
+                    counter++;
+                }
+            }
+            //compteur++;
+            colorRed /= counter;
+            colorGreen /= counter;
+            colorBlue /= counter;
+
+            if(colorRed > colorGreen && colorRed > colorBlue) {
+                colorEmplacement[i][j] = 'r';
+                red++;
+            }
+
+            if(colorGreen > colorRed && colorGreen > colorBlue) {
+                colorEmplacement[i][j] = 'g';
+                green++;
+            }
+
+            if(colorBlue > colorRed && colorBlue > colorGreen) {
+                colorEmplacement[i][j] = 'b';
+                blue++;
+            }
+
+            pieceCounter++;
+            ui->progress->setValue((pieceCounter / (piece * piece)) * 100);
         }
     }
-    QMessageBox::information(this, "Nombre de découpe", QString::number(compteur) + " carré ont été découpés !", QMessageBox::Ok);
+    QMessageBox::information(this, "Nombre de découpe", QString::number(pieceCounter) + " carré ont été découpés !", QMessageBox::Ok);
+    QMessageBox::information(this, "Résultats", "Résultats des couleurs :\nRouge : " + QString::number(red) + "\nVert : " + QString::number(green) + "\nBleu : " + QString::number(blue));
 }

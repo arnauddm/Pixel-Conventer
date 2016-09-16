@@ -24,6 +24,7 @@ private:
     //variable
     QPixmap image;
     QPixmap cutImage[100][100];
+    char colorEmplacement[100][100];
     bool imageLoad;
     int piece;
     
