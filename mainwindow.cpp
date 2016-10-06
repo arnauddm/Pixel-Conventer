@@ -41,28 +41,22 @@ void MainWindow::openImage() {
     ui->imageViewer->setPixmap(image);
 }
 
-void MainWindow::cut() {
-    int height(image.height()), width(image.width()), lastX(0), lastY(0);
-
-    for(int i(0) ; i < piece ; i++) {
-        for(int j(0) ; j < piece ; j++) {
-            cutImage[i][j] = image.copy(lastX, lastY, i * (width / piece), j * (height / piece));
-            lastX += width / piece;
-            lastY += height / piece;
-        }
-    }
+void MainWindow::convert() {
+    unsigned int piece(ui->numberPiece->value());
+    calculPixel(piece);
+    emissionResult(piece);
 }
 
-void MainWindow::convert() {
-    piece = ui->numberPiece->value();
-    cut();
-    int pieceCounter(0);
-    QImage frag;
-    int red(0), green(0), blue(0);
+void MainWindow::calculPixel(unsigned int numberPiece) {
+    int height(image.height()), width(image.width()), lastX(0), lastY(0), red(0), green(0), blue(0), pieceCounter(0);
 
-    for(int i(0) ; i != piece ; i++) {
-        for(int j(0) ; j != piece ; j++) {
-            frag = cutImage[i][j].toImage();
+    for(int i(0) ; i < numberPiece ; i++) {
+        for(int j(0) ; j < numberPiece ; j++) {
+            QImage frag;
+            frag = image.copy(lastX, lastY, i * (width / numberPiece), j * (height / numberPiece)).toImage();
+            lastX += width / numberPiece;
+            lastY += height / numberPiece;
+
             int colorRed(0), colorGreen(0), colorBlue(0), counter(0);
             for(int x(0) ; x != frag.width() ; x++) {
                 for(int y(0) ; y != frag.height() ; y++) {
@@ -73,7 +67,6 @@ void MainWindow::convert() {
                     counter++;
                 }
             }
-            //compteur++;
             colorRed /= counter;
             colorGreen /= counter;
             colorBlue /= counter;
@@ -94,9 +87,33 @@ void MainWindow::convert() {
             }
 
             pieceCounter++;
-            ui->progress->setValue((pieceCounter / (piece * piece)) * 100);
+            ui->progress->setValue((pieceCounter / (numberPiece * numberPiece)) * 100);
         }
     }
-    QMessageBox::information(this, "Nombre de découpe", QString::number(pieceCounter) + " carré ont été découpés !", QMessageBox::Ok);
-    QMessageBox::information(this, "Résultats", "Résultats des couleurs :\nRouge : " + QString::number(red) + "\nVert : " + QString::number(green) + "\nBleu : " + QString::number(blue));
+}
+
+void MainWindow::emissionResult(unsigned int numberPiece) {
+    unsigned int red(0), green(0), blue(0);
+
+    for(unsigned int i(0) ; i < numberPiece ; i++) {
+        for(unsigned int j(0) ; j < numberPiece ; j++) {
+            switch (colorEmplacement[i][j]) {
+            case 'r':
+                red++;
+                break;
+
+            case 'g':
+                green++;
+                break;
+
+            case 'b':
+                blue++;
+                break;
+
+            default:
+                break;
+            }
+        }
+    }
+    QMessageBox::information(this, "Résultats", "Émission des résultats...\n\tRouge : " + QString::number(red) + "\n\tVert : " + QString::number(green) + "\n\tBleu : " + QString::number(blue), QMessageBox::Ok);
 }

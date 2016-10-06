@@ -26,15 +26,14 @@ private:
     QPixmap cutImage[100][100];
     char colorEmplacement[100][100];
     bool imageLoad;
-    int piece;
     
 private slots :
     //functions
     void quit();
     void openImage();
-    //void allToOne();
-    void cut();
     void convert();
+    void calculPixel(unsigned int numberPiece);
+    void emissionResult(unsigned int numberPiece);
 };
 
 #endif // MAINWINDOW_H
