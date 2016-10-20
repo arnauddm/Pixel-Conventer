@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <vector>
 
 namespace Ui {
 class MainWindow;
@@ -18,22 +19,20 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void convert();
+    char colorRuling(unsigned int, unsigned int, unsigned int);
+
 private:
     Ui::MainWindow *ui;
     
     //variable
-    QPixmap image;
-    QPixmap cutImage[100][100];
-    char colorEmplacement[100][100];
+    QImage image;
+    std::vector<std::vector<char> >colorEmplacement;
     bool imageLoad;
     
 private slots :
-    //functions
     void quit();
     void openImage();
-    void convert();
-    void calculPixel(unsigned int numberPiece);
-    void emissionResult(unsigned int numberPiece);
 };
 
 #endif // MAINWINDOW_H

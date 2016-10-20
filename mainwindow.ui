@@ -103,13 +103,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="raz">
-           <property name="text">
-            <string>Remise à zéro</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="close">
            <property name="text">
             <string>Quitter</string>
