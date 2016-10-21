@@ -27,7 +27,7 @@ private:
     
     //variable
     QImage image;
-    char **colorEmplacement;
+    char **colorEmplacement; //on créer un pointeur de pointeur qui nous permettra d'avoir un tableau à deux dim
     bool imageLoad;
     
 private slots :

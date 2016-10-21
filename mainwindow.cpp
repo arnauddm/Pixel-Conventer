@@ -43,18 +43,22 @@ void MainWindow::openImage() {
 }
 
 void MainWindow::convert() {
-    unsigned int lastX(0), lastY(0);
-    unsigned int numberPiece(ui->numberPiece->value());
-    QMessageBox::information(this, "", "Le tableau sera créé");
+    if(!imageLoad)
+        return; //si aucune image n'est sélectionnée on quitte
+
+    unsigned int lastX(0), lastY(0), numberPiece(ui->numberPiece->value());
+
+    //on créer notre tableau dynamiquement
     colorEmplacement = new char* [numberPiece];
     for(unsigned int i(0) ; i < numberPiece ; i++)
         colorEmplacement[i] = new char[numberPiece];
 
+    //on averti du nomber de découpage
+    QMessageBox::information(this, "t", "Nombre de découpage : " + QString::number(numberPiece * numberPiece));
 
-    QMessageBox::information(this, "t", "Nombre de découpage : " + QString::number(numberPiece));
 
-    for(unsigned int i(0) ; i < numberPiece ; i++) {
-        for(unsigned int j(0) ; j < numberPiece ; j++) {
+    for(unsigned int i(0) ; i < numberPiece ; i++) { // et ce qui suit
+        for(unsigned int j(0) ; j < numberPiece ; j++) { // on reconsitue notre image par portion directement en parcourant l'image = pas de conversion inutile
             unsigned int red(0), green(0), blue(0), counter(0); //variable propre à chaque frag reconstitué
 
             for(unsigned int x(lastX) ; x < lastX + (image.width() / ui->numberPiece->value()) ; x++) { //pour x allant de l'ancien X jusqu'au X du prochain frag
@@ -67,7 +71,7 @@ void MainWindow::convert() {
             }
             lastX = 0;
 
-            colorEmplacement[i][j] = colorRuling(red, green, blue);
+            colorEmplacement[i][j] = colorRuling(red, green, blue); //on écrit dans le tableau la couleur dominante
 
         }
     }
@@ -75,6 +79,7 @@ void MainWindow::convert() {
 }
 
 char MainWindow::colorRuling(unsigned int red, unsigned int green, unsigned int blue) {
+    //fonction qui détermine la couleur dominante
     if(red > green && red > blue)
         return 'r';
     if(green > blue)
@@ -94,5 +99,6 @@ void MainWindow::emitResult(unsigned int numberPiece) {
                 blue++;
         }
     }
+
     QMessageBox::information(this, "Résultats", "Rouge : " + QString::number(red) + "\nVert : " + QString::number(green) + "\nBleu" + QString::number(blue));
 }
