@@ -19,20 +19,21 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    void convert();
     char colorRuling(unsigned int, unsigned int, unsigned int);
+    void emitResult(unsigned int);
 
 private:
     Ui::MainWindow *ui;
     
     //variable
     QImage image;
-    std::vector<std::vector<char> >colorEmplacement;
+    char **colorEmplacement;
     bool imageLoad;
     
 private slots :
     void quit();
     void openImage();
+    void convert();
 };
 
 #endif // MAINWINDOW_H

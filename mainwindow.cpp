@@ -44,10 +44,17 @@ void MainWindow::openImage() {
 
 void MainWindow::convert() {
     unsigned int lastX(0), lastY(0);
-    colorEmplacement.resize(ui->numberPiece->value());
+    unsigned int numberPiece(ui->numberPiece->value());
+    QMessageBox::information(this, "", "Le tableau sera créé");
+    colorEmplacement = new char* [numberPiece];
+    for(unsigned int i(0) ; i < numberPiece ; i++)
+        colorEmplacement[i] = new char[numberPiece];
 
-    for(unsigned int i(0) ; i < colorEmplacement.size() ; i++) {
-        for(unsigned int j(0) ; j < colorEmplacement.size() ; j++) {
+
+    QMessageBox::information(this, "t", "Nombre de découpage : " + QString::number(numberPiece));
+
+    for(unsigned int i(0) ; i < numberPiece ; i++) {
+        for(unsigned int j(0) ; j < numberPiece ; j++) {
             unsigned int red(0), green(0), blue(0), counter(0); //variable propre à chaque frag reconstitué
 
             for(unsigned int x(lastX) ; x < lastX + (image.width() / ui->numberPiece->value()) ; x++) { //pour x allant de l'ancien X jusqu'au X du prochain frag
@@ -58,11 +65,13 @@ void MainWindow::convert() {
                     counter++;
                 }
             }
+            lastX = 0;
 
             colorEmplacement[i][j] = colorRuling(red, green, blue);
 
         }
     }
+    emitResult(numberPiece);
 }
 
 char MainWindow::colorRuling(unsigned int red, unsigned int green, unsigned int blue) {
@@ -71,4 +80,19 @@ char MainWindow::colorRuling(unsigned int red, unsigned int green, unsigned int 
     if(green > blue)
         return 'g';
     return 'b';
+}
+
+void MainWindow::emitResult(unsigned int numberPiece) {
+    int red(0), green(0), blue(0);
+    for(unsigned int i(0) ; i < numberPiece ; i++) {
+        for(unsigned int j(0) ; j < numberPiece ; j++) {
+            if(colorEmplacement[i][j] == 'r')
+                red++;
+            if(colorEmplacement[i][j] == 'g')
+                green++;
+            if(colorEmplacement[i][j] == 'b')
+                blue++;
+        }
+    }
+    QMessageBox::information(this, "Résultats", "Rouge : " + QString::number(red) + "\nVert : " + QString::number(green) + "\nBleu" + QString::number(blue));
 }
