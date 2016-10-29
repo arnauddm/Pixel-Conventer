@@ -6,6 +6,8 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <vector>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 
 namespace Ui {
 class MainWindow;
@@ -29,6 +31,9 @@ private:
     QImage image;
     char **colorEmplacement; //on créer un pointeur de pointeur qui nous permettra d'avoir un tableau à deux dim
     bool imageLoad;
+
+    QGraphicsScene *scene;
+    QGraphicsView *view;
     
 private slots :
     void quit();

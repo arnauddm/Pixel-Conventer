@@ -1,5 +1,6 @@
-#include "mainwindow.h"
+#include "mainwindow.hpp"
 #include "ui_mainwindow.h"
+#include "px.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,6 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->close, SIGNAL(clicked(bool)), this, SLOT(quit()));
     connect(ui->open, SIGNAL(clicked(bool)), this, SLOT(openImage()));
     connect(ui->convert, SIGNAL(clicked(bool)), this, SLOT(convert()));
+
+    //init scene & view
+    scene = new QGraphicsScene();
+    view = new QGraphicsView();
 }
 
 MainWindow::~MainWindow()
@@ -40,11 +45,14 @@ void MainWindow::openImage() {
     image.load(imageLink);
     image = image.scaled(ui->imageViewer->size(), Qt::IgnoreAspectRatio, Qt::FastTransformation); //afficher l'image en occupant tout l'espace
     ui->imageViewer->setPixmap(QPixmap::fromImage(image));
+    imageLoad = true;
 }
 
 void MainWindow::convert() {
-    if(!imageLoad)
+    if(!imageLoad) {
         return; //si aucune image n'est sélectionnée on quitte
+        QMessageBox::warning(this, "Error", "Error ! No image !");
+    }
 
     unsigned int lastX(0), lastY(0), numberPiece(ui->numberPiece->value());
 
@@ -62,7 +70,7 @@ void MainWindow::convert() {
             unsigned int red(0), green(0), blue(0), counter(0); //variable propre à chaque frag reconstitué
 
             for(unsigned int x(lastX) ; x < lastX + (image.width() / ui->numberPiece->value()) ; x++) { //pour x allant de l'ancien X jusqu'au X du prochain frag
-                for(unsigned int y(lastY) ; y < lastY + (image.height()) ; y++) {
+                for(unsigned int y(lastY) ; y < lastY + (image.height() / ui->numberPiece->value()) ; y++) {
                     red += qRed(image.pixel(x, y));
                     green += qGreen(image.pixel(x, y));
                     blue += qBlue(image.pixel(x, y));
@@ -101,4 +109,17 @@ void MainWindow::emitResult(unsigned int numberPiece) {
     }
 
     QMessageBox::information(this, "Résultats", "Rouge : " + QString::number(red) + "\nVert : " + QString::number(green) + "\nBleu" + QString::number(blue));
+
+    scene->clear();
+    int sizePx(image.width() / numberPiece);
+
+    for(unsigned int i(0) ; i < numberPiece ; i++) {
+        for(unsigned int j(0) ; j < numberPiece ; j++) {
+            //create pixel
+            Px *pix = new Px(i * sizePx, j * sizePx, sizePx, colorEmplacement[i][j]);
+            scene->addItem(pix);
+        }
+    }
+    view->setScene(scene);
+    view->show();
 }
