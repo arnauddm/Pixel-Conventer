@@ -7,8 +7,7 @@
 class Px : public QGraphicsEllipseItem
 {
 public:
-    Px(int x, int y, int size, char color);
-    ~Px();
+    Px(int x, int y, int size, int red, int green, int blue);
 
 signals:
 

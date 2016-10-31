@@ -54,6 +54,8 @@ void MainWindow::convert() {
         QMessageBox::warning(this, "Error", "Error ! No image !");
     }
 
+    scene->clear();
+
     unsigned int lastX(0), lastY(0), numberPiece(ui->numberPiece->value());
 
     //on créer notre tableau dynamiquement
@@ -64,13 +66,13 @@ void MainWindow::convert() {
     //on averti du nomber de découpage
     QMessageBox::information(this, "t", "Nombre de découpage : " + QString::number(numberPiece * numberPiece));
 
-
+    int sizePx(image.width() / numberPiece);
     for(unsigned int i(0) ; i < numberPiece ; i++) { // et ce qui suit
         for(unsigned int j(0) ; j < numberPiece ; j++) { // on reconsitue notre image par portion directement en parcourant l'image = pas de conversion inutile
             unsigned int red(0), green(0), blue(0), counter(0); //variable propre à chaque frag reconstitué
 
-            for(unsigned int x(lastX) ; x < lastX + (image.width() / ui->numberPiece->value()) ; x++) { //pour x allant de l'ancien X jusqu'au X du prochain frag
-                for(unsigned int y(lastY) ; y < lastY + (image.height() / ui->numberPiece->value()) ; y++) {
+            for(unsigned int x(lastX) ; x < lastX + (image.width() / numberPiece) ; x++) { //pour x allant de l'ancien X jusqu'au X du prochain frag
+                for(unsigned int y(lastY) ; y < lastY + (image.height() / numberPiece) ; y++) {
                     red += qRed(image.pixel(x, y));
                     green += qGreen(image.pixel(x, y));
                     blue += qBlue(image.pixel(x, y));
@@ -78,21 +80,31 @@ void MainWindow::convert() {
                 }
             }
             lastX = 0;
-
+            red /= counter;
+            green /= counter;
+            blue /= counter;
             colorEmplacement[i][j] = colorRuling(red, green, blue); //on écrit dans le tableau la couleur dominante
-
+            Px *px = new Px(i * sizePx, j * sizePx, sizePx, red, green, blue);
+            scene->addItem(px);
         }
     }
     emitResult(numberPiece);
+    view->setScene(scene);
+    view->show();
 }
 
 char MainWindow::colorRuling(unsigned int red, unsigned int green, unsigned int blue) {
     //fonction qui détermine la couleur dominante
-    if(red > green && red > blue)
+    if(red == green == blue == 255)
+        return 'w';
+    else if(red == green == blue == 0)
+        return 'n';
+    else if(red > green && red > blue)
         return 'r';
-    if(green > blue)
+    else if(green > red && green > blue)
         return 'g';
-    return 'b';
+    else if(blue > red && blue > green)
+        return 'b';
 }
 
 void MainWindow::emitResult(unsigned int numberPiece) {
@@ -110,7 +122,7 @@ void MainWindow::emitResult(unsigned int numberPiece) {
 
     QMessageBox::information(this, "Résultats", "Rouge : " + QString::number(red) + "\nVert : " + QString::number(green) + "\nBleu" + QString::number(blue));
 
-    scene->clear();
+    /*scene->clear();
     int sizePx(image.width() / numberPiece);
 
     for(unsigned int i(0) ; i < numberPiece ; i++) {
@@ -121,5 +133,5 @@ void MainWindow::emitResult(unsigned int numberPiece) {
         }
     }
     view->setScene(scene);
-    view->show();
+    view->show();*/
 }

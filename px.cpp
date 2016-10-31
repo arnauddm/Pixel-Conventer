@@ -1,9 +1,15 @@
 #include "px.hpp"
 
-Px::Px(int x, int y, int size, char color) {
+Px::Px(int x, int y, int size, int red, int green, int blue) {
     //get color of pixel & create brush
-    QBrush brush;
+    /*QBrush brush;
     switch (color) {
+    case 'w':
+        brush = Qt::white;
+        break;
+    case 'n':
+        brush = Qt::black;
+        break;
     case 'r':
         brush = Qt::red;
         break;
@@ -12,17 +18,11 @@ Px::Px(int x, int y, int size, char color) {
         break;
     case 'b':
         brush = Qt::blue;
-        break;
     default:
         brush = Qt::white;
         break;
-    }
+    }*/
 
     this->setRect(x, y, size, size);
-    this->setBrush(brush);
-}
-
-Px::~Px()
-{
-    delete this;
+    this->setBrush(QColor(red, green, blue));
 }
