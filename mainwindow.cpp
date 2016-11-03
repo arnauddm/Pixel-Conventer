@@ -50,8 +50,8 @@ void MainWindow::openImage() {
 
 void MainWindow::convert() {
     if(!imageLoad) {
-        return; //si aucune image n'est sélectionnée on quitte
         QMessageBox::warning(this, "Error", "Error ! No image !");
+        return; //si aucune image n'est sélectionnée on quitte
     }
 
     scene->clear();
@@ -66,28 +66,27 @@ void MainWindow::convert() {
     //on averti du nomber de découpage
     QMessageBox::information(this, "t", "Nombre de découpage : " + QString::number(numberPiece * numberPiece));
 
-    int sizePx(image.width() / numberPiece);
-    for(unsigned int i(0) ; i < numberPiece ; i++) { // et ce qui suit
-        for(unsigned int j(0) ; j < numberPiece ; j++) { // on reconsitue notre image par portion directement en parcourant l'image = pas de conversion inutile
-            unsigned int red(0), green(0), blue(0), counter(0); //variable propre à chaque frag reconstitué
-
-            for(unsigned int x(lastX) ; x < lastX + (image.width() / numberPiece) ; x++) { //pour x allant de l'ancien X jusqu'au X du prochain frag
-                for(unsigned int y(lastY) ; y < lastY + (image.height() / numberPiece) ; y++) {
+    int sizePx(((image.width() + image.height()) / 2) / numberPiece);
+    for(unsigned int i(0) ; i < numberPiece ; i++) {
+        for(unsigned int j(0) ; j < numberPiece ; j++) {
+            //on parcours l'image
+            int red(0), green(0), blue(0), counter(0);
+            for(unsigned int x(i * sizePx) ; x < ((i + 1) * sizePx) - 1 ; x++) {
+                for(unsigned int y(j * sizePx) ; y < ((j + 1) * sizePx) - 1 ; y++) {
                     red += qRed(image.pixel(x, y));
                     green += qGreen(image.pixel(x, y));
                     blue += qBlue(image.pixel(x, y));
                     counter++;
                 }
             }
-            lastX = 0;
-            red /= counter;
-            green /= counter;
-            blue /= counter;
-            colorEmplacement[i][j] = colorRuling(red, green, blue); //on écrit dans le tableau la couleur dominante
+            red /= counter; green /= counter; blue /= counter;
             Px *px = new Px(i * sizePx, j * sizePx, sizePx, red, green, blue);
             scene->addItem(px);
+
         }
     }
+
+
     emitResult(numberPiece);
     view->setScene(scene);
     view->show();
