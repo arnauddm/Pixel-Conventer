@@ -66,13 +66,15 @@ void MainWindow::convert() {
     //on averti du nomber de découpage
     QMessageBox::information(this, "t", "Nombre de découpage : " + QString::number(numberPiece * numberPiece));
 
-    int sizePx(((image.width() + image.height()) / 2) / numberPiece);
+
+    int wPx(image.width() / numberPiece);
+    int hPx(image.height() / numberPiece);
     for(unsigned int i(0) ; i < numberPiece ; i++) {
         for(unsigned int j(0) ; j < numberPiece ; j++) {
             //on parcours l'image
             int red(0), green(0), blue(0), counter(0);
-            for(unsigned int x(i * sizePx) ; x < ((i + 1) * sizePx) - 1 ; x++) {
-                for(unsigned int y(j * sizePx) ; y < ((j + 1) * sizePx) - 1 ; y++) {
+            for(unsigned int x(i * wPx) ; x < ((i + 1) * wPx) - 1 ; x++) {
+                for(unsigned int y(j * hPx) ; y < ((j + 1) * hPx) - 1 ; y++) {
                     red += qRed(image.pixel(x, y));
                     green += qGreen(image.pixel(x, y));
                     blue += qBlue(image.pixel(x, y));
@@ -80,7 +82,7 @@ void MainWindow::convert() {
                 }
             }
             red /= counter; green /= counter; blue /= counter;
-            Px *px = new Px(i * sizePx, j * sizePx, sizePx, red, green, blue);
+            Px *px = new Px(i * wPx, j * hPx, (hPx + wPx) / 2, red, green, blue);
             scene->addItem(px);
 
         }
