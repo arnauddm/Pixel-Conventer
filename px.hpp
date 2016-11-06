@@ -2,6 +2,7 @@
 #define PX_HPP
 
 #include <QGraphicsEllipseItem>
+#include <QGraphicsRectItem>
 #include <QBrush>
 
 class Px : public QGraphicsEllipseItem

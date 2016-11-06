@@ -58,15 +58,6 @@ void MainWindow::convert() {
 
     unsigned int lastX(0), lastY(0), numberPiece(ui->numberPiece->value());
 
-    //on créer notre tableau dynamiquement
-    colorEmplacement = new char* [numberPiece];
-    for(unsigned int i(0) ; i < numberPiece ; i++)
-        colorEmplacement[i] = new char[numberPiece];
-
-    //on averti du nomber de découpage
-    QMessageBox::information(this, "t", "Nombre de découpage : " + QString::number(numberPiece * numberPiece));
-
-
     int wPx(image.width() / numberPiece);
     int hPx(image.height() / numberPiece);
     for(unsigned int i(0) ; i < numberPiece ; i++) {
@@ -87,52 +78,6 @@ void MainWindow::convert() {
 
         }
     }
-
-
-    emitResult(numberPiece);
     view->setScene(scene);
     view->show();
-}
-
-char MainWindow::colorRuling(unsigned int red, unsigned int green, unsigned int blue) {
-    //fonction qui détermine la couleur dominante
-    if(red == green == blue == 255)
-        return 'w';
-    else if(red == green == blue == 0)
-        return 'n';
-    else if(red > green && red > blue)
-        return 'r';
-    else if(green > red && green > blue)
-        return 'g';
-    else if(blue > red && blue > green)
-        return 'b';
-}
-
-void MainWindow::emitResult(unsigned int numberPiece) {
-    int red(0), green(0), blue(0);
-    for(unsigned int i(0) ; i < numberPiece ; i++) {
-        for(unsigned int j(0) ; j < numberPiece ; j++) {
-            if(colorEmplacement[i][j] == 'r')
-                red++;
-            if(colorEmplacement[i][j] == 'g')
-                green++;
-            if(colorEmplacement[i][j] == 'b')
-                blue++;
-        }
-    }
-
-    QMessageBox::information(this, "Résultats", "Rouge : " + QString::number(red) + "\nVert : " + QString::number(green) + "\nBleu" + QString::number(blue));
-
-    /*scene->clear();
-    int sizePx(image.width() / numberPiece);
-
-    for(unsigned int i(0) ; i < numberPiece ; i++) {
-        for(unsigned int j(0) ; j < numberPiece ; j++) {
-            //create pixel
-            Px *pix = new Px(i * sizePx, j * sizePx, sizePx, colorEmplacement[i][j]);
-            scene->addItem(pix);
-        }
-    }
-    view->setScene(scene);
-    view->show();*/
 }

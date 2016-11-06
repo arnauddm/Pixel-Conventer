@@ -21,9 +21,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    char colorRuling(unsigned int, unsigned int, unsigned int);
-    void emitResult(unsigned int);
-
 private:
     Ui::MainWindow *ui;
     
